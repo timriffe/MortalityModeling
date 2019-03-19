@@ -45,25 +45,115 @@ The aging of populations increases the need for accurate measurement of mortalit
 
 Measurement changes in age patterns of mortality are one of the main motivation for modeling; however, there are at least three motivations for modeling, which correspond to meta approaches: measurement, explaining and predicting.
 
-### Measurement
+### Measurement (reduce this!)
 More often the business of research is to measure the mortality (longevity) of (stratified) populations, which except in the most privileged data environments, always invokes some degree of modeling. For example, even if the researcher is satisfied with relative risks, in many cases the researcher will often measure this using a proportional hazards assumption, possibly with a log linear mortality under the hood. In the more general case, where stratified lifetables are the objective (e.g to compare expectancies or lifespan disparities), modeling for measurement might rely on the application of standard mortality patterns (for example model lifetable look-ups, Brass relational logit fitting of an arbitrary standard, or the Wilmoth log quad relational method to an arbitrary standard), which usually proceeds by specification of 1, 2, or 3 substantive parameters, like life expectancy, infant or child mortality, or adult mortality in a fixed age range (possibly all originating from surveys) to select or warp the given standard. In this case the standard and its parameter mapping constitute the mortality model. In the same sense parametric models, such as the Gompertz or Kannisto models are often used to smooth or extrapolate mortality in old ages for purposes of noise (or age heaping) reduction or lifetable closeout, and this is an example of mortality models applied to measurement. Even stable population theory is applied to measurement in the case of the generalized growth balance adjustment for mortality under/over registration (relative to population registration)- in this case the assumptions invoked are the model. In the area of statistical inference for measurement mortality is modeled via the estimator family. For example, a Poisson counting process assumption for deaths given a certain level of exposure is another commonly used model, but others, e.g. log normal rate distributions arise from time to time. Here again the objective is measurement. The same is true of smoothing in general, where the objective is to parse data down to its signal, where the signal is the measurement.
 
 
 ### Explaining (reduce this!)
 Since mortality rates are an emergent property of individuals (individuals do not have rates, but group rates are an instrument to approximate the unmeasureable notion of individual risk), one branch of mortality modeling tries to produce process models at the individual level, such that empirical properties of human mortality arise in the aggregate (see Finkelstein; Anatoli; Anderson & Li, Vaupel, Alan Cohen). Such models linking individual senescence to aggregate mortality might take into account concepts such as shocks to the organism that deplete some store of vitality or frailty, or aspects of individual resuscitation, and they might be deterministic or stochastic. This class of model seeks to answer the question of why mortality has the character that it does, or else to infer something about the unobserved distribution of frailty or the experience of vitality and shocks within individuals. This kind of modeling is premised to a certain extent of human mortality having some sort of permanent character. Secular changes in the character of mortality (e.g. rectangularization) are often taken into account with ex post model generalizations, and they have thus far not turned out to be ex ante predictions of these models. For this reason, I say that this (extended) family of mortality modeling aims to explain, and not to measure or predict mortality.
 
-### Predicting
+### Predicting (reduce this!)
 Mortality prediction might refer to projection, retrojection, or even interpolation for missing observations. In any of these cases, the purpose for model abstraction is to reduce the number of parameters to project to those that i) are able to reproduce the age pattern, and ii) themselves have evolved in some regular way over time, for example linearly. For example, the Lee-Carter forecasting model takes an array of mortality rates by age and time (a \* t initial parameters to summarize) and reduces it to (approximately) 2 * a + 2 parameters, of which all but one are modeled as fixed in time, and a single parameter is forecast, often but not necessarily with a time series model. While LC is a particularly popular prediction model for projection, retrojection, and interpolation (with many variants), all prediction models bear some resemblance in that usually one (or sometimes two or more correlated parameters) are extrapolated in a first step, and then the mortality age pattern is invoked via the specified mapping (which is hopefully time invariant). Since this branch of mortality modeling is not concerned with explaining, the components of such models are not bound to having substantive interpretations, and sometimes process-agnostic matrix decomposition methods (SVD, PCA, or others) are used to reduce the parameter space. Indeed, these same tactics are also used for the last (but not least!) objective of measurement.
 
 
 # Key Research Findings
-This section contains and overview of some key findings that have been made in mortality modeling over the last centuries.
+This section contains an overview of some key findings that have been made in mortality modeling over the last centuries.
 
 ### Gompertz law 
-One of the most important contributions to modelling mortality traces back to almost two centuries ago. In 1825, the British mathematician and actuary Benjamin Gompertz [@gompertz1825xxiv] theorized that the adult age-pattern of the force of mortality, specifically around the age range 30-90, increases exponentially with age. This assumption has proven to be a pretty accurate representation of the mortality pattern of several populations throughout the last two centuries. As such, the Gompertz law of mortality is today one of the most well-known models of human mortality, and it is still widely employed in demographic and actuarial analyses. The first panel of Figure 1 shows the fit of the Gompertz model to the male population of Switzerland in 2010. As the graph shows, the assumption of exponential (linear in log scale) increase of mortality with age still a valid representation of the human mortality pattern. 
+One of the most important contributions to modeling mortality traces back to almost two centuries ago. The British mathematician and actuary Benjamin Gompertz [-@gompertz1825xxiv] theorized that the adult age-pattern of the force of mortality, specifically around the age range 30-90, increases exponentially with age. This assumption has proven to be a pretty accurate representation of the mortality pattern of several populations throughout the last two centuries. As such, the Gompertz law of mortality is today one of the most well-known models of human mortality, and it is still widely employed in demographic and actuarial analyses. The first panel of Fig \@ref(fig:Gompertz) shows the fit of the Gompertz model to the male population of Switzerland in 2010. As the graph shows, the assumption of exponential (linear in log scale) increase of mortality with age is still a valid representation of the human mortality pattern. 
+
+```{r Gompertz, echo = FALSE, message = FALSE, warning = FALSE, fig.cap="Observed and fitted death rates using a log-linear (Gompertz) model for males aged 40 to 100 in Switzerland in the year 2010.", fig.width = 7, fig.height=7}
+# This data object created in SSE.R
+DX <- c(217, 17, 9, 8, 10, 7, 5, 4, 4, 11, 10, 6, 6, 8, 13, 12, 10, 
+		25, 32, 37, 49, 45, 48, 33, 39, 48, 48, 58, 42, 54, 47, 59, 58, 
+		64, 54, 66, 68, 74, 93, 74, 89, 88, 105, 112, 112, 105, 113, 
+		135, 157, 165, 183, 185, 226, 262, 226, 259, 301, 333, 315, 342, 
+		345, 352, 361, 404, 430, 467, 479, 530, 586, 636, 652, 690, 670, 
+		750, 760, 866, 884, 950, 985, 1054, 1074, 976, 900, 920, 953, 
+		983, 964, 898, 822, 712, 651, 613, 450, 395, 253, 195, 140, 87, 
+		73, 39, 33, 17, 9, 5, 2, 0, 0, 0, 0, 0, 0)
+EX <- c(39980.5, 40331, 40832.5, 41767.5, 42090.5, 41878.5, 42626.5, 
+		43947, 45087.5, 45245.5, 44681, 44235.5, 43495, 42805.5, 42704, 
+		42827, 42852.5, 42653.5, 42908, 42928, 42327, 41416.5, 41457, 
+		41487.5, 41828, 43270.5, 44962, 46922, 49138.5, 51123, 53192, 
+		55358, 57517.5, 59765.5, 62033.5, 63767, 63794, 62494, 60825, 
+		59561.5, 58440.5, 57074.5, 56005.5, 55159.5, 53630, 51941, 50460.5, 
+		49869.5, 49207.5, 49311.5, 49792.5, 49721.5, 49760.5, 49505.5, 
+		48749.5, 47447.5, 45978.5, 44169, 41469, 38244, 36041, 34893, 
+		33470.5, 32602.5, 32242, 31326.5, 29867, 28764, 27864, 27003.5, 
+		25864.5, 24411.5, 23303.5, 22292.5, 21465.5, 20294.5, 19246.5, 
+		18193, 17190.5, 16204, 13758.095, 11652.475, 10355.17, 9281.875, 
+		8314.4, 7685.01, 6897.155, 5820.03, 4728.975, 3801.81, 3072.335, 
+		2346.85, 1723.14, 1258.645, 871.085, 558.4, 357, 243, 152, 80.5, 
+		53.5, 25.5, 15.5, 5.5, 1.5, 1.5, 1, 0.5, 0, 0, 0)
+ages        <- 0:110
+x           <- 40:100
+mx.obs      <- DX / EX
+x           <- 40:100
+m           <- length(x)
+Dx_sub      <- DX[ages%in%x]
+Ex_sub      <- EX[ages%in%x]
+mx.obs_sub  <- mx.obs[ages%in%x]
+
+fit.gompertz <- MortalityLaws::MortalityLaw(x = x, Dx = Dx_sub, Ex = Ex_sub,
+		law = "gompertz", opt.method = "poissonL")
+
+# x             <- Gompertz$x
+# mx.obs_sub    <- Gompertz$mx.obs_sub
+# fitted.values <- Gompertz$fitted.values
+my.cols.obs   <- c("grey20")
+my.cols.mod   <- c("#d7191c")
+par(mai=c(1,1,.1,.1))
+plot(x,mx.obs_sub,log="y",type="n",axes=FALSE,xlab="",ylab="")
+mtext("Age",side=1,line=2.5,cex=2)
+mtext("Log-mortality",side=2,line=2.75,cex=1.75)
+abline(h=c(0.002,0.01,0.05,0.5),lty=3,col="grey70")
+abline(v=seq(40,100,10),lty=3,col="grey70")
+axis(1);axis(2,las=2,at=c(0.002,0.01,0.05,0.5));box()
+points(x,mx.obs_sub,pch=5,cex=1.5,col=my.cols.obs,lwd=2)
+lines(x,fit.gompertz$fitted.values,col=my.cols.mod,lwd=2.5)
+legend("bottomright",c("Observed","Gompertz"),col=c(my.cols.obs,my.cols.mod),
+		lwd=2.5,bty="n",cex=1.5,pch = c(5,NA),lty=c(NA,1))
+```
 
 ### Negative senescence and hump
-Another key finding regarding the age-pattern of mortality was first described a few years after Gompertz. In 1871, the Danish astronomer and actuary Thorvald Thiele introduced the decomposition of the human mortality pattern into three groups that operate principally, or almost exclusively, upon childhood, middle, and old ages, respectively. These three components of mortality represent the risk of death at different times in life, and they have been observed to follow a stable pattern throughout history. The first component represents infant and child mortality, which decreases steadily with age, with a sharp reduction after birth. The second component, known as the accident hump for its particular shape, describes mortality after the onset of puberty and stretching into younger adult ages. Specifically, the component captures the accident deaths due to the risk-taking behavior of young men and, historically, mortality related to childbearing in women. Finally, the third component is generally denoted as senescent mortality, which was Gompertz’s centre of attention. As noted above, the component starts at middle-adult ages and increases exponentially with age. Several parametric and non-parametric approaches have been proposed in the last few decades to decompose the human mortality pattern. The second panel of Figure 2 shows this decomposition, applied to the same population as above. The three components of mortality clearly emerge from the graph. 
+Another key finding regarding the age-pattern of mortality was first described a few years after Gompertz. In 1871, the Danish astronomer and actuary Thorvald Thiele introduced the decomposition of the human mortality pattern into three groups that operate principally, or almost exclusively, upon childhood, middle, and old ages, respectively. These three components of mortality represent the risk of death at different times in life, and they have been observed to follow a stable pattern throughout history. The first component represents infant and child mortality, which decreases steadily with age, with a sharp reduction after birth. The second component, known as the accident hump for its particular shape, describes mortality after the onset of puberty and stretching into younger adult ages. Specifically, the component captures the accident deaths due to the risk-taking behavior of young men and, historically, mortality related to childbearing in women. Finally, the third component is generally denoted as senescent mortality, which was Gompertz’s centre of attention. As noted above, the component starts at middle-adult ages and increases exponentially with age. Several parametric and non-parametric approaches have been proposed in the last few decades to decompose the human mortality pattern. The second panel of Fig. \@ref(fig:SSE) shows this decomposition, applied to the same population as above. The three components of mortality clearly emerge from the graph. 
+
+
+```{r SSE, echo = FALSE, message = FALSE, warning = FALSE, fig.cap="decomposition of the observed death rates into infant, young adult excess, and senescent components for males in Switzerland in the year 2010.", fig.width = 7, fig.height=7}
+# This data object created in SSE.R
+library(MortalitySmooth)
+source("R/SSE.R")
+ages   <- 0:110
+years  <- 2000:2001
+cou    <- "Switzerland"
+DX     <- selectHMDdata(country = cou,data = "Deaths",sex = "Males",
+                     ages = ages, years = years)
+EX     <- selectHMDdata(country = cou,data = "Exposures",sex = "Males",
+                     ages = ages, years = years)
+fitSSE <- SSEdecomposition(Z = DX, E = EX, ages = ages, years = years)
+jj          <- 1
+mx.obs      <- DX[,jj] / EX[,jj]
+my.cols.obs <- c("grey40")
+#par(mar=c(3.75,4.25,1,1))
+## bottom, left, top, right
+plot(ages,mx.obs,log="y",t="n",axes="F",xlab="",ylab="",ylim = range(exp(-11),mx.obs[!mx.obs==0],na.rm=T))
+mtext("Age",side=1,line=2.5,cex=2)
+mtext("Log-mortality",side=2,line=2.75,cex=1.75)
+abline(h=c(1e-4,0.001,0.01,0.1,1),lty=3,col="grey70")
+abline(v=seq(0,100,20),lty=3,col="grey70")
+axis(1);
+axis(2,las=2,at=c(1e-4,0.001,0.01,0.1,1),
+     labels=c(1e-4,0.001,0.01,0.1,1));box()
+points(ages,mx.obs,pch=5,cex=1.25,col=my.cols.obs,lwd=2)
+lines(ages,exp(fitSSE$LHAZhat[,jj]),col=1,lwd=3)
+lines(fitSSE$xINF,exp(fitSSE$LHAZ1hat[,jj]),col=6,lwd=2.5,lty=2)
+lines(fitSSE$xSEN,exp(fitSSE$LHAZ2hat[,jj]),col=3,lwd=2.5,lty=2)
+lines(fitSSE$xACC,exp(fitSSE$LHAZ3hat[,jj]),col=4,lwd=2.5,lty=2)
+legend("bottomright",c("Observed","Infant","Accident","Senescent"),col=c(my.cols.obs,6,4,3),
+       lwd=2.5,bty="n",cex=1.5,pch = c(5,NA,NA,NA),lty=c(NA,2,2,2))
+
+```
 
 ### Debate on plateau 
 There is a general agreement that mortality increases exponentially from mid-adult to ages 80-90, as described by the Gompertz law. However, there is not yet a consensus regarding the mortality trajectory at the most advanced ages. Some studies suggested that the exponential growth of mortality with age is followed by a period of deceleration, with slower rates of mortality increase at the oldest ages, creating a plateau of human mortality (@barbi2018plateau, Gampe 2010; Robine and Vaupel 2001; Robine et al. 2005). Another group of researchers claimed that the mortality deceleration in later life or the mortality plateau is more expressed for data with lower quality, and hence mortality continues to grow exponentially at the highest ages (Gavirilov and Gavirilova 2011, 2015, 2019). Logistic curves like Kannisto (Kannisto 1994), Beard (1971) and Perks (Perks 1932) model the mortality plateau, while the Gompertz law rises exponentially with age.
@@ -72,14 +162,32 @@ There is a general agreement that mortality increases exponentially from mid-adu
 Rectangularization is defined by the process when the shape of the survival curve becomes more rectangular due to reductions in premature mortality and the concentration of deaths at older ages. In 1980, James Fries claimed that the rectangularization occurs when life expectancy at birth approaches the average lifespan due to a decrease in variability in age-at-death (Fries 1980). In other words, when lifespan variability decreases, deaths are compressed at older ages. However, since the second half of the twentieth century, lifespan variability has been stagnating and life expectancy continued to increase in high-income countries, resulting in a process known by mortality shifting (Kannisto 1996; Boongarts 2005; Bergeron-Boucher et al. 2015). Mortality shifting occurs when life expectancy increases due to a shift in the death distribution toward older ages with nearly constant lifespan variability (Vaupel 1986, Yashin et al. 2001, Bongaarts 2005, Canudas-Romo 2008). 
 
 ### Oeppen-Vaupel line 
-Oeppen and Vaupel [-@oeppen2002demography] showed one of the most striking regularities observed in human mortality during the last centuries: the highest level of observed life expectancy has been rising at a steady pace of almost 3 months per year during the last 160 years.. The authors analyzed the evolution of the female best-practice life expectancy at birth (that is, the life expectancy of the country holding the highest level in the whole world in a given calendar year) from 1840 to 2000, finding that a straight line fits extremely well the data. In other words, they found that the highest level of observed life expectancy has been rising at a steady pace of almost 3 months per year during the last 160 years. The last panel of Figure 3 shows this remarkable finding, which has had direct implications in a number of spheres, for example, mortality forecasting. The best-practice line has indeed been employed in some forecasting methodologies.   
+Oeppen and Vaupel [-@oeppen2002demography] showed one of the most striking regularities observed in human mortality during the last centuries: the highest level of observed life expectancy has been rising at a steady pace of almost 3 months per year during the last 160 years. The authors analyzed the evolution of the female best-practice life expectancy at birth (that is, the life expectancy of the country holding the highest level in the whole world in a given calendar year) from 1840 to 2000, finding that the trend is very linear, rising at a steady pace of almost 3 months per year during the last 160 years. Fig. \@ref(fig:OV) shows this remarkable finding, which has had direct implications in a number of spheres, for example, mortality forecasting. The best-practice line has indeed been employed in some forecasting methodologies (cite).   
+
+```{r OV, echo = FALSE, message = FALSE, warning = FALSE, fig.cap="Best-practice female life expectancy at birth from 1840 to 2016. data: HMD.", fig.width = 7, fig.height=7 }
+library(ggplot2)
+my.cols <- c("purple3",
+  "dodgerblue4", "green4","orange2", "firebrick3","blue4")
+
+source("Data/OV.R")
+ggplot(data=df,aes(x=year,y=e0max)) + 
+  geom_point(aes(shape=Country, color=Country),size=3.5) + 
+  scale_shape_manual(values=c(2, 5, 1, 0, 8, 6)) +
+  scale_color_manual(values=my.cols) +
+  xlab("Year") + ylab("Life expectancy") + 
+  geom_smooth(method = "lm", se = FALSE, color= "black") +
+  theme(legend.title = element_text(size=18,face="bold"),
+        axis.title.x = element_text(size=16,face="bold"),
+        axis.title.y = element_text(size=16,face="bold"),
+        axis.text.x = element_text(size=14),
+        axis.text.y = element_text(size=14)) 
+```
 
 # Examples of Application 	 	 	
 ### Model lifetables 
 Model lifetables comprise a family of techniques designed to relate partial mortality information to a full age pattern of mortality, which can then be used to calculate standard mortality indicators such as life expectancy. Many variants exist and have long been in use, especially in the context of mortality measurement in countries without complete vital registration [@unpd1982; @wpp2012; @coale1983regional; @wilmoth2012flexible; @clark2015singular]. Model patterns are derived by reducing the mortality patterns in a large collection of lifetables into a smaller set of relationships that when scaled and warped according to a small number of (usually) intuitive parameters.
 
-
-```{r, message = FALSE, warning = FALSE, echo = FALSE}
+```{r MLTwilmoth, echo = FALSE, message = FALSE, warning = FALSE, fig.cap="A demonstration of some of the flexibility given in the Wilmoth et al (2012) model lifetable approach. A standard is derived from HMD male lifetables. From this, nine different survivorships are derived from combinations of specified child and adult mortality. Three levels of child mortality (0.01,0.05,0.10) are paired with three levels of relative adult mortality, 1.5, 2.5, and 5.0 times higher than the given child mortality estimate, respectively.", fig.width = 7, fig.height=7}
 # Note, full code to derive the object LX is located
 # 
 library(RColorBrewer)
@@ -92,10 +200,6 @@ reds    <- brewer.pal(5,"Reds")[3:5]
 blues   <- brewer.pal(5,"Blues")[3:5]
 purples <- brewer.pal(5,"Purples")[3:5]
 CC      <- rbind(blues,purples,reds)
-```
-
-```{r MLTwilmoth, echo = FALSE, fig.cap="A demonstration of some of the flexibility given in the Wilmoth et al (2012) model lifetable approach. A standard is derived from HMD male lifetables. From this, nine different survivorships are derived from combinations of specified child and adult mortality. Three levels of child mortality (0.01,0.05,0.10) are paired with three levels of relative adult mortality, 1.5, 2.5, and 5.0 times higher than the given child mortality estimate, respectively.", fig.width = 7, fig.height=7}
-
 matplot(x, LX, lwd = 2, col = t(CC), lty = 1:3,type='l',
 		xlab="Age",ylab="Survival probability", las = 1)
 text(3,LX[3, c(1,4,7)]+.015, c("0.01","0.05","0.10"), pos = 4)
@@ -114,7 +218,63 @@ For the case of gerontological research, model lifetables such as that demonstra
 ### Extrapolation and smoothing 
 The Human Mortality Database (HMD) uses a parametric procedure to smooth old-age death rates in period life tables. Specifically, the Kannisto model of old-age mortality [@thatcher1998force] is used to remove the randomness inherent to the observed rates at older ages, thus obtaining “an improved representation of the underlying mortality conditions” [@hmd2017methods, p. 34]. The model is fitted to ages 80 and above, separately for males and females, assuming a Poisson distribution for death counts. The estimated parameters yields smooth death rates, which are used to replace the observed rates for all ages above age . In particular,  is defined as the lowest age where there are at most 100 deaths (male or female), but it is constrained to fall within the age interval [80, 95] (for additional information, see @hmd2017methods).
 
-The right panel of Figure 5 shows an example of this procedure. This figure shows the observed and lifetable death rates for females in England and Wales in 2010 (HMD). The two rates depart from each other after age 95 (which is age for this population, as less than 100 deaths were observed from the age-group 106). In particular, the life table death rates are derived from the Kannisto mortality model, as discussed above. In addition, three other well-known models of mortality to this population: the Gompertz, the Weibull and the Gamma-Gompertz model. The fitted lines show that the Gamma-Gompertz model produces estimates that are very close to the Kannisto model, while the Gompertz and Weibull model overestimate the observed pattern of mortality at the highest ages. 
+```{r Extrap, echo = FALSE, message = FALSE, warning = FALSE, fig.cap="Observed and lifetable death rates for females in England and Wales in the year 2010, with fit of four different parametric mortality models. The Gompertz model is log linear, whereas the Kannisto and Gamma-Gompertz models deviate after age 95, tapering toward a plateau. The Weibull extrapolation is intermediate in this case.", fig.width = 7, fig.height=7}
+library(MortalityLaws)
+# load GBRENW 2010 female data
+source("Data/HMD.R")
+ages 			 <- 0:110
+year             <- 2010
+cou              <- "GBRTENW"
+names(Dx)        <- names(Ex) <- ages
+mx.obs           <- Dx / Ex
+## focus on old age mortality
+x.start          <- 80
+x                <- x.start:tail(ages,1)
+m                <- length(x)
+Dx_sub           <- Dx[ages%in%x]
+Ex_sub           <- Ex[ages%in%x]
+mx.obs_sub       <- mx.obs[ages%in%x]
+mx.lt_sub        <- mx.lt[ages%in%x]
+
+## select four models to fit to the data
+models <- c("gompertz","ggompertz","kannisto","weibull")
+fit.gompertz <- MortalityLaw(x = x, Dx = Dx_sub, Ex = Ex_sub,
+                             law = models[1], opt.method = "poissonL")
+fit.ggompertz <- MortalityLaw(x = x, Dx = Dx_sub, Ex = Ex_sub,
+                              law = models[2], opt.method = "poissonL")
+fit.kannisto <- MortalityLaw(x = x, Dx = Dx_sub, Ex = Ex_sub,
+                             law = models[3], opt.method = "poissonL")
+fit.weibull <- MortalityLaw(x = x, Dx = Dx_sub, Ex = Ex_sub,
+                            law = models[4], opt.method = "poissonL")
+
+## choose colors
+my.cols.obs <- c("grey40","grey20")
+#my.cols.mod <- c("#d7191c","chartreuse4","darkorange","dodgerblue3")
+my.cols.mod <- c("#008E77","#458200","#A46400","#C23F86")
+my.lty.mod  <- c("81","44","63","8222")
+
+plot(x,mx.obs_sub,log="y",t="n",axes="F",xlab="",ylab="")
+mtext("Age",side=1,line=2.5,cex=2)
+mtext("Log-mortality",side=2,line=2.75,cex=1.75)
+abline(h=c(0.05,0.1,0.2,0.5,1),lty=3,col="grey70")
+abline(v=seq(80,110,5),lty=3,col="grey70")
+axis(1);axis(2,las=2);box()
+points(x,mx.obs_sub,pch=5,cex=1.5,col=my.cols.obs[2],lwd=2)
+points(x,mx.lt_sub,pch=1,cex=1.7,col=my.cols.obs[1],lwd=2)
+legend("topleft",c("Observed","Life Table"),col=rev(my.cols.obs),
+       pch=c(5,1),bty="n",cex=1.5,lwd=2,lty=NA,pt.cex=c(2,2.25))
+matlines(x,cbind(fit.gompertz$fitted.values,
+				 fit.weibull$fitted.values,
+				 fit.ggompertz$fitted.values,
+				 fit.kannisto$fitted.values),
+		 col=my.cols.mod,
+		 lwd=2.5,
+		 lty=my.lty.mod)
+legend("bottomright",c("Gompertz","Weibull","Gamma-Gomp","Kannisto"),col=my.cols.mod,
+       lwd=2.5,lty=my.lty.mod,bty="n",cex=1.5)
+```
+
+The right panel of Fig. \@ref(fig:Extrap) shows an example of this procedure. This figure shows the observed and lifetable death rates for females in England and Wales in 2010 (HMD). The two rates depart from each other after age 95 (which is age for this population, as less than 100 deaths were observed from the age-group 106). In particular, the life table death rates are derived from the Kannisto mortality model, as discussed above. In addition, three other well-known models of mortality to this population: the Gompertz, the Weibull and the Gamma-Gompertz model. The fitted lines show that the Gamma-Gompertz model produces estimates that are very close to the Kannisto model, while the Gompertz and Weibull model overestimate the observed pattern of mortality at the highest ages. 
 
 # Future Directions of Research
 Future research in mortality modeling will extend the applications of presently available modeling techniques to yet-understudied populations, either due to innovations to increase applicability or due to new data becoming available. Several thematic areas for future research are evident:
