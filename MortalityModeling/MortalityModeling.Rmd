@@ -119,20 +119,21 @@ Another key finding regarding the age-pattern of mortality was described a few y
 # This data object created in SSE.R
 library(MortalitySmooth)
 source("R/SSE.R")
-ages   <- 0:110
-years  <- 2000:2001
+ages0   <- 0:110
+years  <- 2000
+sex <- "Males"
 cou    <- "Switzerland"
-DX     <- selectHMDdata(country = cou,data = "Deaths",sex = "Males",
+deaths     <- selectHMDdata(country = cou,data = "Deaths",sex = sex,
                      ages = ages, years = years)
-EX     <- selectHMDdata(country = cou,data = "Exposures",sex = "Males",
+exposures     <- selectHMDdata(country = cou,data = "Exposures",sex = sex,
                      ages = ages, years = years)
-fitSSE <- SSEdecomposition(Z = DX, E = EX, ages = ages, years = years)
+fitSSE <- SSEdecomposition(deaths = deaths, exposures = exposures, ages0 = ages0, sex = sex)
 jj          <- 1
-mx.obs      <- DX[,jj] / EX[,jj]
+mx.obs      <- deaths / exposures
 my.cols.obs <- c("grey40")
 #par(mar=c(3.75,4.25,1,1))
 ## bottom, left, top, right
-plot(ages,mx.obs,log="y",t="n",axes="F",xlab="",ylab="",ylim = range(exp(-11),mx.obs[!mx.obs==0],na.rm=T))
+plot(ages0,mx.obs,log="y",t="n",axes="F",xlab="",ylab="",ylim = range(exp(-11),mx.obs[!mx.obs==0],na.rm=T))
 mtext("Age",side=1,line=2.5,cex=2)
 mtext("Log-mortality",side=2,line=2.75,cex=1.75)
 abline(h=c(1e-4,0.001,0.01,0.1,1),lty=3,col="grey70")
@@ -140,11 +141,11 @@ abline(v=seq(0,100,20),lty=3,col="grey70")
 axis(1);
 axis(2,las=2,at=c(1e-4,0.001,0.01,0.1,1),
      labels=c(1e-4,0.001,0.01,0.1,1));box()
-points(ages,mx.obs,pch=5,cex=1.25,col=my.cols.obs,lwd=2)
-lines(ages,exp(fitSSE$LHAZhat[,jj]),col=1,lwd=3)
-lines(fitSSE$xINF,exp(fitSSE$LHAZ1hat[,jj]),col=6,lwd=2.5,lty=2)
-lines(fitSSE$xSEN,exp(fitSSE$LHAZ2hat[,jj]),col=3,lwd=2.5,lty=2)
-lines(fitSSE$xACC,exp(fitSSE$LHAZ3hat[,jj]),col=4,lwd=2.5,lty=2)
+points(ages0,mx.obs,pch=5,cex=1.25,col=my.cols.obs,lwd=2)
+lines(ages0,exp(fitSSE$lhaz.hat),col=1,lwd=3)
+lines(fitSSE$x1A,exp(fitSSE$lhaz1.hat),col=6,lwd=2.5,lty=2)
+lines(fitSSE$x2,exp(fitSSE$lhaz2.hat),col=3,lwd=2.5,lty=2)
+lines(fitSSE$x3,exp(fitSSE$lhaz3.hat),col=4,lwd=2.5,lty=2)
 legend("bottomright",c("Observed","Infant","Accident","Senescent"),col=c(my.cols.obs,6,4,3),
        lwd=2.5,bty="n",cex=1.5,pch = c(5,NA,NA,NA),lty=c(NA,2,2,2))
 
