@@ -403,6 +403,6 @@ Mortality modeling aims to describe patterns and changes in mortality over age a
 chapters: Force of mortality, Life Tables, Model life table, Mortality at oldest old ages, Mortality leveling, Mortality projection, Supercentenarians
 
 # Reproduciblity
-Empirical work in this chapter is reproducible using publicly available data from the Human Mortality Database. An open repository containing *R* scripts to produce figures in this chapter is available under the following url: [https://osf.io/7t2bg/?view_only=27b3c26731d040ac861af64e42b964d8](https://osf.io/7t2bg/?view_only=27b3c26731d040ac861af64e42b964d8)
+Empirical work in this chapter is reproducible using publicly available data from the Human Mortality Database. An open repository containing *R* code to produce figures in this chapter is available under the following url: [https://github.com/timriffe/mortalitymodeling](https://github.com/timriffe/mortalitymodeling)
 
 # References
