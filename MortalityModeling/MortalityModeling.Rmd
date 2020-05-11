@@ -348,7 +348,7 @@ fit.kannisto <- MortalityLaw(x = x, Dx = Dx_sub, Ex = Ex_sub,
 fit.weibull <- MortalityLaw(x = x, Dx = Dx_sub, Ex = Ex_sub,
                             law = models[4], opt.method = "poissonL")
 
-## choose colors
+## choose colors  
 my.cols.obs <- c("grey40","grey20")
 #my.cols.mod <- c("#d7191c","chartreuse4","darkorange","dodgerblue3")
 my.cols.mod <- c("#008E77","#458200","#A46400","#C23F86")
